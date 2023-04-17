@@ -1,0 +1,65 @@
+const { buildSchema } = require('graphql');
+
+module.exports = buildSchema(`       
+        type Patient {
+            _id: ID!
+            name: String!
+            description: String!
+            bodyTemperature: Float!
+            date: String!
+            creator: User!
+        }
+        
+        type User {
+            _id: ID!
+            name: String!
+            password: String
+            createdPatients: [Patient!]
+        }
+
+        type AuthData {
+            userId: ID!
+            token: String!
+            tokenExpiration: Int!
+            name: String!
+        }
+
+        type Record {
+            _id: ID!
+            patient: Patient!
+            user: User!
+            createdAt: String!
+            updatedAt: String!
+        }
+
+        input PatientInput {
+            name: String!
+            description: String!
+            bodyTemperature: Float!
+            date: String!
+        }
+
+        input UserInput {
+            name: String!
+            password: String!
+        }
+
+        type RootQuery {
+            patients: [Patient!]!
+            records: [Record!]!
+            login(name: String!, password: String!): AuthData!
+        }
+
+        type RootMutation {
+            createPatient(patientInput: PatientInput): Patient
+            createUser(userInput: UserInput): AuthData!
+            deletePatient(patientId: ID!): Patient!
+            recordPatient(patientId: ID!): Patient!
+            cancelRecord(recordId: ID!): Patient!
+        }
+
+        schema {
+            query: RootQuery
+            mutation: RootMutation
+        }
+    `);
